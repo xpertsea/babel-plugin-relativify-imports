@@ -1,0 +1,25 @@
+{
+  "name": "babel-plugin-relativify-imports",
+  "version": "0.0.1",
+  "description": "Babel plugin to convert absolute import paths to relative paths",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pdesjardins90/babel-plugin-relativify-imports.git"
+  },
+  "keywords": [
+    "babel",
+    "babel-plugin",
+    "esmodules",
+    "browser"
+  ],
+  "author": "pdesjardins90",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/pdesjardins90/babel-plugin-relativify-imports/issues"
+  },
+  "homepage": "https://github.com/pdesjardins90/babel-plugin-relativify-imports#readme"
+}
