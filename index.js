@@ -5,15 +5,20 @@ function isExpressionDynamicImport({ expression }) {
   return expression.node.callee.type === 'Import'
 }
 
-function relativifyModulePath({ types, modulePathSource, sourceFileName }) {
+function convertToRelativePath({ absoluteModulePath, sourceFileFullPath }) {
+  const sourceFileFolderFullPath = path.dirname(sourceFileFullPath)
+  const moduleFileFullPath = path.join(__dirname, absoluteModulePath)
+  return path.relative(sourceFileFolderFullPath, moduleFileFullPath)
+}
+
+function relativifyModulePath({ types, modulePathSource, sourceFileFullPath }) {
   try {
     if (modulePathSource.node === null) return
     const modulePath = modulePathSource.node.value
 
     if (!path.isAbsolute(modulePath)) return
-    const absoluteModulePath = modulePath
+    const relativeModulePath = convertToRelativePath({ absoluteModulePath: modulePath, sourceFileFullPath })
 
-    const relativeModulePath = path.relative(sourceFileName, absoluteModulePath)
     const relativeModulePathSource = types.stringLiteral(relativeModulePath)
     modulePathSource.replaceWith(relativeModulePathSource)
   } catch (error) {
@@ -33,14 +38,14 @@ module.exports = ({ types }) => ({
       relativifyModulePath({
         types,
         modulePathSource,
-        sourceFileName: expression.hub.file.opts.parserOpts.sourceFileName
+        sourceFileFullPath: expression.hub.file.opts.parserOpts.sourceFileName
       })
     },
     'ImportDeclaration|ExportNamedDeclaration|ExportAllDeclaration'(expression) {
       relativifyModulePath({
         types,
         modulePathSource: expression.get('source'),
-        sourceFileName: expression.hub.file.opts.parserOpts.sourceFileName
+        sourceFileFullPath: expression.hub.file.opts.parserOpts.sourceFileName
       })
     }
   }
