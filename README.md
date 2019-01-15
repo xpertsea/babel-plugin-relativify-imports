@@ -2,7 +2,7 @@
 
 Babel plugin to convert absolute import paths to relative paths. [_This repo is a work in progress_]
 
-Note: to convert bare module imports, please use [cfware/babel-plugin-bare-import-rewrite](https://github.com/cfware/babel-plugin-bare-relativify-imports) before this plugin in your babel plugin chain.
+Note: to convert bare module imports, please use [cfware/babel-plugin-bare-import-rewrite](https://github.com/cfware/babel-plugin-bare-import-rewrite) before this plugin in your babel plugin chain.
 
 ## Requirements
 
