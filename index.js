@@ -7,8 +7,11 @@ function isExpressionDynamicImport({ expression }) {
 
 function convertToRelativePath({ absoluteModulePath, sourceFileFullPath }) {
   const sourceFileFolderFullPath = path.dirname(sourceFileFullPath)
-  const moduleFileFullPath = path.join(__dirname, absoluteModulePath)
-  return path.relative(sourceFileFolderFullPath, moduleFileFullPath)
+  const moduleFileFullPath = path.join(process.cwd(), absoluteModulePath)
+  const relativeModulePath = path.relative(sourceFileFolderFullPath, moduleFileFullPath)
+  return relativeModulePath.startsWith('.')
+    ? relativeModulePath
+    : `./${relativeModulePath}`
 }
 
 function relativifyModulePath({ types, modulePathSource, sourceFileFullPath }) {

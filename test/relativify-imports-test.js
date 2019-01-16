@@ -122,6 +122,14 @@ describe('relativify-imports', () => {
       })
     })
 
+    context('static imports in inner folder', () => {
+      it('are made relative', () => {
+        const input = `import { MyModule } from "/test/some-folder/my-module.js";`
+        const { output } = relativify({ input })
+        expect(output).to.be.equal(`import { MyModule } from "./some-folder/my-module.js";`)
+      })
+    })
+
     context('dynamic imports', () => {
       it('are made relative', () => {
         const input = `import("/src/some-folder/my-module.js");`
