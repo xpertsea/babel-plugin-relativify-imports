@@ -1,0 +1,8 @@
+node_modules/
+*.git
+*.gitattributes
+*.gitignore
+*.json
+*.lock
+*.md
+*.yml

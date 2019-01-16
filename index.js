@@ -1,11 +1,11 @@
 const path = require('path')
 const syntax = require('@babel/plugin-syntax-dynamic-import')
 
-function isExpressionDynamicImport({ expression }) {
+function isExpressionDynamicImport ({ expression }) {
   return expression.node.callee.type === 'Import'
 }
 
-function convertToRelativePath({ absoluteModulePath, sourceFileFullPath }) {
+function convertToRelativePath ({ absoluteModulePath, sourceFileFullPath }) {
   const sourceFileFolderFullPath = path.dirname(sourceFileFullPath)
   const moduleFileFullPath = path.join(process.cwd(), absoluteModulePath)
   const relativeModulePath = path.relative(sourceFileFolderFullPath, moduleFileFullPath)
@@ -14,26 +14,21 @@ function convertToRelativePath({ absoluteModulePath, sourceFileFullPath }) {
     : `./${relativeModulePath}`
 }
 
-function relativifyModulePath({ types, modulePathSource, sourceFileFullPath }) {
-  try {
-    if (modulePathSource.node === null) return
-    const modulePath = modulePathSource.node.value
+function relativifyModulePath ({ types, modulePathSource, sourceFileFullPath }) {
+  if (modulePathSource.node === null) return
+  const modulePath = modulePathSource.node.value
 
-    if (!path.isAbsolute(modulePath)) return
-    const relativeModulePath = convertToRelativePath({ absoluteModulePath: modulePath, sourceFileFullPath })
+  if (!path.isAbsolute(modulePath)) return
+  const relativeModulePath = convertToRelativePath({ absoluteModulePath: modulePath, sourceFileFullPath })
 
-    const relativeModulePathSource = types.stringLiteral(relativeModulePath)
-    modulePathSource.replaceWith(relativeModulePathSource)
-  } catch (error) {
-    console.error(error)
-    throw error
-  }
+  const relativeModulePathSource = types.stringLiteral(relativeModulePath)
+  modulePathSource.replaceWith(relativeModulePathSource)
 }
 
 module.exports = ({ types }) => ({
   inherits: syntax.default,
   visitor: {
-    CallExpression(expression) {
+    CallExpression (expression) {
       if (!isExpressionDynamicImport({ expression })) return
       const [modulePathSource] = expression.get('arguments')
       if (modulePathSource.type !== 'StringLiteral') return
@@ -44,7 +39,7 @@ module.exports = ({ types }) => ({
         sourceFileFullPath: expression.hub.file.opts.parserOpts.sourceFileName
       })
     },
-    'ImportDeclaration|ExportNamedDeclaration|ExportAllDeclaration'(expression) {
+    'ImportDeclaration|ExportNamedDeclaration|ExportAllDeclaration' (expression) {
       relativifyModulePath({
         types,
         modulePathSource: expression.get('source'),

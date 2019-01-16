@@ -4,7 +4,7 @@ const { transform } = require('@babel/core')
 
 const plugin = require('../index.js')
 
-function relativify({ input }) {
+function relativify ({ input }) {
   const { code } = transform(input, {
     filename: join(__dirname, 'file.js'),
     plugins: [plugin]
@@ -111,7 +111,6 @@ describe('relativify-imports', () => {
       })
     })
   })
-
 
   context('absolute', () => {
     context('static imports', () => {
