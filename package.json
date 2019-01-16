@@ -1,10 +1,10 @@
 {
   "name": "babel-plugin-relativify-imports",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Babel plugin to convert absolute import paths to relative paths",
   "main": "index.js",
   "scripts": {
-    "test": "test"
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
@@ -21,5 +21,16 @@
   "bugs": {
     "url": "https://github.com/pdesjardins90/babel-plugin-relativify-imports/issues"
   },
-  "homepage": "https://github.com/pdesjardins90/babel-plugin-relativify-imports#readme"
+  "homepage": "https://github.com/pdesjardins90/babel-plugin-relativify-imports#readme",
+  "dependencies": {
+    "@babel/core": "^7.2.2",
+    "@babel/plugin-syntax-dynamic-import": "^7.2.0"
+  },
+  "peerDependencies": {
+    "@babel/core": "^7.0.0"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^5.2.0"
+  }
 }
