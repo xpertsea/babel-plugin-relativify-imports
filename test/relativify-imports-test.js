@@ -14,33 +14,87 @@ function relativify({ input }) {
 }
 
 describe('relativify-imports', () => {
-  context('when relative imports', () => {
-    context('from outer folder', () => {
-      it('are unchanged', () => {
-        const input = `import { MyModule } from "../src/some-folder/my-module.js";`
-        const { output } = relativify({ input })
-        expect(output).to.be.equal(input)
+  context('already relative', () => {
+    context('static imports', () => {
+      context('from outer folder', () => {
+        it('are unchanged', () => {
+          const input = `import { MyModule } from "../src/some-folder/my-module.js";`
+          const { output } = relativify({ input })
+          expect(output).to.be.equal(input)
+        })
+      })
+
+      context('from inner folder with . prefix', () => {
+        it('are unchanged', () => {
+          const input = `import { MyModule } from "./some-folder/my-module.js";`
+          const { output } = relativify({ input })
+          expect(output).to.be.equal(input)
+        })
+      })
+
+      context('from inner folder without . prefix', () => {
+        it('are unchanged', () => {
+          const input = `import { MyModule } from "some-folder/my-module.js";`
+          const { output } = relativify({ input })
+          expect(output).to.be.equal(input)
+        })
       })
     })
 
-    context('from inner folder with . prefix', () => {
-      it('are unchanged', () => {
-        const input = `import { MyModule } from "./some-folder/my-module.js";`
-        const { output } = relativify({ input })
-        expect(output).to.be.equal(input)
+    context('dynamic imports', () => {
+      context('from outer folder', () => {
+        it('are unchanged', () => {
+          const input = `import("../src/some-folder/my-module.js");`
+          const { output } = relativify({ input })
+          expect(output).to.be.equal(input)
+        })
+      })
+
+      context('from inner folder with . prefix', () => {
+        it('are unchanged', () => {
+          const input = `import("./some-folder/my-module.js");`
+          const { output } = relativify({ input })
+          expect(output).to.be.equal(input)
+        })
+      })
+
+      context('from inner folder without . prefix', () => {
+        it('are unchanged', () => {
+          const input = `import("some-folder/my-module.js");`
+          const { output } = relativify({ input })
+          expect(output).to.be.equal(input)
+        })
       })
     })
 
-    context('from inner folder without . prefix', () => {
-      it('are unchanged', () => {
-        const input = `import { MyModule } from "some-folder/my-module.js";`
-        const { output } = relativify({ input })
-        expect(output).to.be.equal(input)
+    context('exports', () => {
+      context('from outer folder', () => {
+        it('are unchanged', () => {
+          const input = `export { MyModule } from "../src/some-folder/my-module.js";`
+          const { output } = relativify({ input })
+          expect(output).to.be.equal(input)
+        })
+      })
+
+      context('from inner folder with . prefix', () => {
+        it('are unchanged', () => {
+          const input = `export { MyModule } from "./some-folder/my-module.js";`
+          const { output } = relativify({ input })
+          expect(output).to.be.equal(input)
+        })
+      })
+
+      context('from inner folder without . prefix', () => {
+        it('are unchanged', () => {
+          const input = `export { MyModule } from "some-folder/my-module.js";`
+          const { output } = relativify({ input })
+          expect(output).to.be.equal(input)
+        })
       })
     })
   })
 
-  context('when bare imports', () => {
+  context('bare imports', () => {
     context('from top-level package', () => {
       it('are unchanged', () => {
         const input = `import { MyModule } from "my-module";`
@@ -58,11 +112,30 @@ describe('relativify-imports', () => {
     })
   })
 
-  context('absolute imports', () => {
-    it('are made relative', () => {
-      const input = `import { MyModule } from "/test-fixtures/my-module.js";`
-      const { output } = relativify({ input })
-      expect(output).to.be.equal(`import { MyModule } from "../test-fixtures/my-module.js";`)
+
+  context('absolute', () => {
+    context('static imports', () => {
+      it('are made relative', () => {
+        const input = `import { MyModule } from "/src/some-folder/my-module.js";`
+        const { output } = relativify({ input })
+        expect(output).to.be.equal(`import { MyModule } from "../src/some-folder/my-module.js";`)
+      })
+    })
+
+    context('dynamic imports', () => {
+      it('are made relative', () => {
+        const input = `import("/src/some-folder/my-module.js");`
+        const { output } = relativify({ input })
+        expect(output).to.be.equal(`import("../src/some-folder/my-module.js");`)
+      })
+    })
+
+    context('exports', () => {
+      it('are made relative', () => {
+        const input = `export * from "/src/some-folder/my-module.js";`
+        const { output } = relativify({ input })
+        expect(output).to.be.equal(`export * from "../src/some-folder/my-module.js";`)
+      })
     })
   })
 })
